@@ -10,12 +10,15 @@ var isSpecial;
 var isUpper;
 var isLower;
 var isNumeric;
-var charContain = []
+var charContain = [];
+//made newPassword a string to stop undefined error.
+var newPassword = "";
 
 //function to generate the random password
 function generatePassword() {
   confirmLength = prompt("How long would you like your password?");
-
+  
+  //call function to confirm the length.
   userCheck(confirmLength);
 //prompts to confirm what kind of characters wanted.
   isSpecial = confirm("Press OK to add special characters.");
@@ -27,31 +30,36 @@ function generatePassword() {
     alert("Password needs at least one character set.")
   }
 
-  if (confirmSpecialCharacter) {
+  if (isNumeric) {
     charContain = charContain.concat(number)
   }
 
-  if (confirmNumericCharacter) {
+  if (isSpecial) {
     charContain = charContain.concat(specialChar)
   }
     
-  if (confirmLowerCase) {
+  if (isLower) {
     charContain = charContain.concat(alphaLower)
   }
 
-  if (confirmUpperCase) {
+  if (isUpper) {
     charContain = charContain.concat(alphaUpper)
   }
 
+  for (var i = 0; i < confirmLength; i++) {
+    newPassword = newPassword + charContain[Math.floor(Math.random() * charContain.length)];
+  }
+
+  return newPassword;
+  
 
 }
-//make sure length is correct, if not re-run genteratePassworD()
-function userCheck(checkLength) {
-  if (checkLength <= 7 || checkLength > 128) {
-    alert("Length must be between 8-128 characters.")
-    generatePassword()
+//make sure length is correct, if not re-run genteratePassword()
+function userCheck(confirmLength) {
+  if (confirmLength <= 7 || confirmLength > 128) {
+    alert("Length must be between 8-128 characters.");
+    generatePassword();
   }
-    return;
 
 }
 
