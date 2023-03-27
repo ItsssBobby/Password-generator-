@@ -1,77 +1,70 @@
-// Assignment Code
-var generateBtn = document.querySelector("#generate");
-// arrays for chars
-var number = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-var specialChar = ["!", "%", "&", ",", "*", "+", "-", ".", "/", "<", ">", "?","~"];
-var alphaLower = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-var alphaUpper = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-var confirmLength; 
-var isSpecial;
-var isUpper;
-var isLower;
-var isNumeric;
-var charContain = [];
-//made newPassword a string to stop undefined error.
-var newPassword = "";
+const generateBtn = document.querySelector("#generate");
+const numbers = "0123456789";
+const specialChars = "!%&, *+-./<>?~";
+const alphaLower = "abcdefghijklmnopqrstuvwxyz";
+const alphaUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-//function to generate the random password
-function generatePassword() {
-  confirmLength = prompt("How long would you like your password?");
-  
-  //call function to confirm the length.
-  userCheck(confirmLength);
-//prompts to confirm what kind of characters wanted.
-  isSpecial = confirm("Press OK to add special characters.");
-  isUpper = confirm("Press OK for capital letters.");
-  isLower = confirm("Press OK for lower-case letters.");
-  isNumeric = confirm("Press OK for numbers.");
+function promptForPasswordLength() {
+  const length = parseInt(prompt("How long would you like your password?"), 10);
 
-  if (isSpecial == false && isUpper == false && isLower == false && isNumeric == false) {
-    alert("Password needs at least one character set.")
-  }
-
-  if (isNumeric) {
-    charContain = charContain.concat(number)
-  }
-
-  if (isSpecial) {
-    charContain = charContain.concat(specialChar)
-  }
-    
-  if (isLower) {
-    charContain = charContain.concat(alphaLower)
-  }
-
-  if (isUpper) {
-    charContain = charContain.concat(alphaUpper)
-  }
-
-  for (var i = 0; i < confirmLength; i++) {
-    newPassword = newPassword + charContain[Math.floor(Math.random() * charContain.length)];
-  }
-
-  return newPassword;
-  
-
-}
-//make sure length is correct, if not re-run genteratePassword()
-function userCheck(confirmLength) {
-  if (confirmLength <= 7 || confirmLength > 128) {
+  if (length < 8 || length > 128) {
     alert("Length must be between 8-128 characters.");
-    generatePassword();
+    return promptForPasswordLength();
   }
 
+  return length;
 }
 
+function promptForCharacterTypes() {
+  const types = {
+    hasSpecial: confirm("Press OK to add special characters."),
+    hasUpper: confirm("Press OK for capital letters."),
+    hasLower: confirm("Press OK for lower-case letters."),
+    hasNumeric: confirm("Press OK for numbers."),
+  };
 
-// Write password to the #password input
+  if (!types.hasSpecial && !types.hasUpper && !types.hasLower && !types.hasNumeric) {
+    alert("Password needs at least one character set.");
+    return promptForCharacterTypes();
+  }
+
+  return types;
+}
+
+function generatePassword(length, types) {
+  let charSet = "";
+
+  if (types.hasNumeric) {
+    charSet += numbers;
+  }
+
+  if (types.hasSpecial) {
+    charSet += specialChars;
+  }
+
+  if (types.hasLower) {
+    charSet += alphaLower;
+  }
+
+  if (types.hasUpper) {
+    charSet += alphaUpper;
+  }
+
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += charSet[Math.floor(Math.random() * charSet.length)];
+  }
+
+  return password;
+}
+
 function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
+  const length = promptForPasswordLength();
+  const types = promptForCharacterTypes();
+  const password = generatePassword(length, types);
+  const passwordText = document.querySelector("#password");
 
   passwordText.value = password;
-
 }
 
-// Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
